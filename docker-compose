@@ -1,0 +1,40 @@
+version: '3.1'
+services:
+  insight:
+    image: nathanls/insight:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      DB_DRIVER: "sqlite3"
+      SQLITE_DB_PATH: "Database.db"
+      HEADERS_FROM_EMAIL: "alex@glaspell.co.uk"
+      DISCORD_TOKEN: "OTc5ODg2NTk4MDEzNDc2ODk0.GbWGup.IilR1dAZrBNrWebqxc86PwrPfV0Wq_xh7yYuJc"
+      CCP_CLIENT_ID: "6c504b28ac954c8fad7fd4e640ecef56"
+      CCP_SECRET_KEY: "NrBCQwgnAlpqg3NlVCvNqDkdKT6MJ2GzBHoOAyx7"
+      CCP_CALLBACK_URL: "https://github.eveinsight.net/Insight/callback/index.html"
+      REDIS_HOST: "redis"
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: "pass"
+      REDIS_PURGE: "FALSE"
+      REDIS_SSL: "FALSE"
+      INSIGHT_ADMINS: "154433606087868416; AnotherAdminUserID"
+      WEBSERVER_ENABLED: "FALSE"
+    volumes:
+      - insight-data:/app
+    networks:
+      - insight-net
+  redis:
+    image: redis:6
+    deploy:
+      mode: replicated
+      replicas: 1
+    networks:
+      - insight-net
+    command: --requirepass "pass"
+networks:
+  insight-net:
+    driver: overlay
+    attachable: true
+volumes:
+  insight-data:
